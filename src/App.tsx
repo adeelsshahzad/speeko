@@ -59,3 +59,14 @@ return(
 <input value={wu} onChange={e=>setWu(e.target.value)} placeholder="YouTube link..." style={{width:"100%",padding:10,borderRadius:10,border:0,boxSizing:"border-box"}}/>
 <button onClick={goWatch} style={{background:"#e91e63",color:"white",border:0,padding:11,borderRadius:10,width:"100%",marginTop:8}}>Start Watching</button>
 {pl&&(<div style={{marginTop:12}}><iframe src={pl} style={{width:"100%",height:220,border:0,borderRadius:12}} allowFullScreen></iframe>
+  {p==="calls"&&(<div style={{padding:16}}><h3>Calls - {s.n}</h3>
+<button onClick={()=>setCall("a")} style={{background:"#00a884",color:"white",border:0,padding:10,borderRadius:20,marginRight:8}}>Voice</button>
+<button onClick={()=>setCall("v")} style={{background:"#25D366",color:"white",border:0,padding:10,borderRadius:20}}>Video</button></div>)}
+<div style={{position:"fixed",bottom:0,left:0,right:0,background:"#0b141a",display:"flex",padding:"8px 0",borderTop:"1px solid #222"}}>
+<button onClick={()=>setP("chats")} style={{flex:1,background:"none",border:0,color:"white"}}>Chats</button>
+<button onClick={()=>setP("updates")} style={{flex:1,background:"none",border:0,color:"white"}}>Updates</button>
+<button onClick={()=>setP("communities")} style={{flex:1,background:"none",border:0,color:"white"}}>Groups</button>
+<button onClick={()=>setP("watch")} style={{flex:1,background:"none",border:0,color:"white"}}>Watch</button>
+<button onClick={()=>setP("calls")} style={{flex:1,background:"none",border:0,color:"white"}}>Calls</button>
+</div></div>);
+}
