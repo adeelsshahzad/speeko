@@ -31,14 +31,26 @@ export default function App() {
 
   const filtered = contacts.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.number.includes(search));
 
+  const tabStyle = (name: string) => ({
+    background: page === name ? "#00a884" : "#2a3942",
+    color: "white",
+    border: 0,
+    fontSize: 12,
+    padding: "7px 11px",
+    borderRadius: 20,
+    fontWeight: page === name ? "bold" as const : "normal" as const,
+  });
+
   return (
     <div style={{ background: "#111b21", color: "white", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "sans-serif" }}>
-      <div style={{ background: "#202c33", padding: "10px 14px", display: "flex", gap: 14, alignItems: "center" }}>
-        <b style={{ color: "#00a884", fontSize: 19, flex: 1 }}>Speeko</b>
-        <button onClick={() => setPage("contacts")} style={{ background: "transparent", color: "white", border: 0, fontSize: 13 }}>Contacts</button>
-        <button onClick={() => setPage("chats")} style={{ background: "transparent", color: "white", border: 0, fontSize: 13 }}>Chats</button>
-        <button onClick={() => setPage("calls")} style={{ background: "transparent", color: "white", border: 0, fontSize: 13 }}>Calls</button>
-        <button onClick={() => setPage("settings")} style={{ background: "transparent", color: "white", border: 0, fontSize: 13 }}>Settings</button>
+      <div style={{ background: "#0b141a", padding: "10px 12px 12px 12px" }}>
+        <b style={{ color: "#00a884", fontSize: 20, display: "block", marginBottom: 9, marginLeft: 4 }}>Speeko</b>
+        <div style={{ background: "#1f2c34", padding: 4, borderRadius: 25, display: "flex", gap: 4 }}>
+          <button onClick={() => setPage("contacts")} style={tabStyle("contacts")}>Contacts</button>
+          <button onClick={() => setPage("chats")} style={tabStyle("chats")}>Chats</button>
+          <button onClick={() => setPage("calls")} style={tabStyle("calls")}>Calls</button>
+          <button onClick={() => setPage("settings")} style={tabStyle("settings")}>Settings</button>
+        </div>
       </div>
 
       {page === "contacts" && (
@@ -59,7 +71,7 @@ export default function App() {
                 <button onClick={() => setShowAdd(false)} style={{ background: "#333", color: "white", padding: 9, border: 0, borderRadius: 8, flex: 1, fontSize: 13 }}>Cancel</button>
                 <button onClick={saveContact} style={{ background: "#00a884", color: "white", padding: 9, border: 0, borderRadius: 8, flex: 1, fontSize: 13 }}>Save</button>
               </div>
-              <button onClick={() => setShowAdd(true)} style={{ background: "transparent", color: "#25D366", border: 0, width: "100%", marginTop: 6, fontSize: 12 }}>📞 Import from Phonebook</button>
+              <button style={{ background: "transparent", color: "#25D366", border: 0, width: "100%", marginTop: 6, fontSize: 12 }}>📞 Import from Phonebook</button>
             </div>
           )}
 
