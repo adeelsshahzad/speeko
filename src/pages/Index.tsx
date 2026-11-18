@@ -216,8 +216,8 @@ export default function Index() {
       >
         <header className="flex items-center justify-between bg-green-700 px-4 py-3 text-green-50">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 font-bold">C</div>
-            <h1 className="text-lg font-semibold tracking-tight">Chirpa</h1>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 font-bold">S</div>
+            <h1 className="text-lg font-semibold tracking-tight">Speeko</h1>
           </div>
           <MoreVertical className="h-5 w-5 opacity-80" />
         </header>
@@ -376,7 +376,7 @@ export default function Index() {
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-700">
               <MessageSquare className="h-8 w-8" />
             </div>
-            <h2 className="text-2xl font-light text-stone-800">Chirpa for web</h2>
+            <h2 className="text-2xl font-light text-stone-800">Speeko for web</h2>
             <p className="max-w-sm text-sm text-stone-500">
               Select a chat to start messaging. Your conversations are shown here.
             </p>
