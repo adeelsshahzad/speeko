@@ -1,20 +1,276 @@
 import {useState,useRef,useEffect} from "react";
 export default function App(){
 const [p,setP]=useState("chats");
-const [cs,setCs]=useState([{n:"Ammi",m:"0300-1234567"},{n:"Abu",m:"0301-7654321"},{n:"My Moti Li...",m:"0300-9999999"}]);
-const [s,setS]=useState({n:"My Moti Li...",m:"0300-9999999"});
+const [cs,setCs]=useState([
+{n:"Ammi",m:"0300-1234567"},
+{n:"Abu",m:"0301-7654321"},
+{n:"My Moti Li...",m:"0300-9999999"}]);
+const [s,setS]=useState(
+{n:"My Moti Li...",m:"0300-9999999"});
 const [inC,setInC]=useState(false);
-const [nn,setNn]=useState("");const [nm,setNm]=useState("");const [q,setQ]=useState("");
-const [ms,setMs]=useState([{t:"x",c:"Hello"},{t:"x",c:"Helloo"}]);
-const [inp,setInp]=useState("");const [call,setCall]=useState(null);
-const [ct,setCt]=useState(0);const [wu,setWu]=useState("");const [pl,setPl]=useState("");
-const fr=useRef(null);const vr=useRef(null);
-useEffect(()=>{if(!call)return;const t=setInterval(()=>setCt(v=>v+1),1000);return()=>clearInterval(t)},[call]);
-useEffect(()=>{if(call==="v"&&vr.current)navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(a=>vr.current.srcObject=a).catch(()=>{})},[call]);
-const save=()=>{if(!nn||!nm)return;const c={n:nn,m:nm};setCs([...cs,c]);setS(c);setNn("");setNm("")};
-const send=()=>{if(!inp)return;setMs([...ms,{t:"x",c:inp}]);setInp("")};
-const file=(e)=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);setMs([...ms,{t:f.type.startsWith("video")?"v":"i",c:u}])};
-const goWatch=()=>{let u=wu;if(u.includes("watch?v="))u="https://www.youtube.com/embed/"+u.split("v=")[1].split("&")[0];if(u.includes("youtu.be/"))u="https://www.youtube.com/embed/"+u.split("youtu.be/")[1].split("?")[0];setPl(u)};
-const f2=cs.filter(c=>c.n.toLowerCase().includes(q.toLowerCase()));
-if(call)return(<div style={{background:"#111b21",color:"white",minHeight:"100vh",textAlign:"center",padding:20}}><h2>{s.n}</h2><p>{call==="v"?"Video":"Voice"} - {Math.floor(ct/60)}:{String(ct%60).padStart(2,"0")}</p>{call==="v"&&<video ref={vr} autoPlay muted playsInline style={{width:"100%",maxWidth:320}}/>}<br/><button onClick={()=>{setCall(null);setCt(0)}} style={{background:"red",color:"white",border:0,width:52,height:52,borderRadius:"50%",marginTop:20}}>📞</button></div>);
-if(inC)return(<div style={{background:"#111b21",color:"white",minHeight:"100vh",display:"flex",flexDirection:"column"}}><div style={{display:"flex",alignItems:"center",padding:10,gap:6,background:"#0b141a"}}><button onClick={()=>setInC(false)} style={{background:"none",border:0,color:"white",fontSize:22}}>‹</button><div style={{background:"#00a884",width:34,height:34,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}>{s.n[0]}</div><div style={{flex:1,fontSize:18,overflow:"hidden",whiteSpace:"nowrap"}}>{s.n}</div><button onClick={()=>setCall("v")} style={{background:"none",border:0,fontSize:20}}>🎥</button><button onClick={()=>setCall("a")} style={{background:"none",border:0,fontSize:20}}>📞</button><button style={{background:"none",border:0,color:"white",fontSize:22}}>⋮</button></div><div style={{padding:8}}><button onClick={()=>setP("watch")} style={{background:"#e91e63",color:"white",border:0,borderRadius:20,padding:"6px 12px",fontSize:12}}>🎬 Watch Together</button></div><div style={{flex:1,padding:12}}>{ms.map((m,i)=><div key={i} style={{background:i%2?"#005c4b":"#202c33",padding:8,borderRadius:10,margin:6,maxWidth:"82%",marginLeft:i%2?"auto":0}}>{m.t==="x"&&m.c}{m.t==="i"&&<img src={m.c} style={{width:"100%"}}/>}{m.t==="v"&&<video src={m.c} controls style={{width:"100%"}}/>}</div>)}</div><div style={{display:"flex",margin:12,gap:6}}><input type="file" ref={fr} accept="image/*,video/*" onChange={file} style={{display:"none"}}/><button onClick={()=>fr.current.click()} style={{background:"#2a3942",color:"white",border:0,borderRadius:"50%",width:42,height:42}}>📎</button><input value={inp} onChange={e=>setInp(e.target.value)} placeholder="Type..." style={{flex:1,padding:10,borderRadius:20,border:0}}/><button onClick={send} style={{background:"#00a884",color:"white",border:0,borderRadius:"50%",width:42,height:42}}>➤</button></div></div>);
+const [nn,setNn]=useState("");
+const [nm,setNm]=useState("");
+const [q,setQ]=useState("");
+const [ms,setMs]=useState([
+{t:"x",c:"Hello"},
+{t:"x",c:"Helloo"}]);
+const [inp,setInp]=useState("");
+const [call,setCall]=useState(null);
+const [ct,setCt]=useState(0);
+const [wu,setWu]=useState("");
+const [pl,setPl]=useState("");
+const fr=useRef(null);
+const vr=useRef(null);
+  useEffect(()=>{
+if(!call) return;
+const t=setInterval(()=>{
+setCt(v=>v+1);
+},1000);
+return ()=>clearInterval(t);
+},[call]);
+
+useEffect(()=>{
+if(call==="v" && vr.current){
+navigator.mediaDevices
+.getUserMedia({video:true,audio:true})
+.then(a=>{vr.current.srcObject=a})
+.catch(()=>{});
+}
+},[call]);
+
+const save=()=>{
+if(!nn||!nm) return;
+const c={n:nn,m:nm};
+setCs([...cs,c]);
+setS(c);
+setNn("");
+setNm("");
+};
+
+const send=()=>{
+if(!inp) return;
+setMs([...ms,{t:"x",c:inp}]);
+setInp("");
+};
+
+const file=(e)=>{
+const f=e.target.files[0];
+if(!f) return;
+const u=URL.createObjectURL(f);
+const ty=f.type.startsWith("video")?"v":"i";
+setMs([...ms,{t:ty,c:u}]);
+};
+
+const goWatch=()=>{
+let u=wu;
+if(u.includes("watch?v=")){
+u="https://www.youtube.com/embed/"
++u.split("v=")[1].split("&")[0];
+}
+if(u.includes("youtu.be/")){
+u="https://www.youtube.com/embed/"
++u.split("youtu.be/")[1].split("?")[0];
+}
+setPl(u);
+};
+
+const f2=cs.filter(c=>
+c.n.toLowerCase().includes(q.toLowerCase())
+);
+  if(call){
+return(
+<div style={{background:"#111b21",
+color:"white",minHeight:"100vh",
+textAlign:"center",padding:20}}>
+<h2>{s.n}</h2>
+<p>
+{call==="v"?"Video":"Voice"} - {ct}
+</p>
+{call==="v" && (
+<video
+ref={vr}
+autoPlay
+muted
+playsInline
+style={{width:"100%",maxWidth:320}}
+/>
+)}
+<br/>
+<button
+onClick={()=>{setCall(null);setCt(0)}}
+style={{background:"red",color:"white",
+border:0,width:52,height:52,
+borderRadius:"50%",marginTop:20}}>
+📞
+</button>
+</div>
+);
+}
+  if(inC){
+return(
+<div style={{background:"#111b21",
+color:"white",minHeight:"100vh",
+display:"flex",flexDirection:"column"}}>
+<div style={{display:"flex",
+alignItems:"center",padding:10,
+gap:6,background:"#0b141a"}}>
+<button
+onClick={()=>setInC(false)}
+style={{background:"none",border:0,
+color:"white",fontSize:22}}>
+‹
+</button>
+<div style={{background:"#00a884",
+width:34,height:34,borderRadius:"50%",
+display:"flex",alignItems:"center",
+justifyContent:"center"}}>
+{s.n[0]}
+</div>
+<div style={{flex:1,fontSize:18,
+overflow:"hidden",whiteSpace:"nowrap"}}>
+{s.n}
+</div>
+<button
+onClick={()=>setCall("v")}
+style={{background:"none",border:0,
+fontSize:20}}>
+🎥
+</button>
+<button
+onClick={()=>setCall("a")}
+style={{background:"none",border:0,
+fontSize:20}}>
+📞
+</button>
+<button
+style={{background:"none",border:0,
+color:"white",fontSize:22}}>
+⋮
+</button>
+</div>
+<div style={{padding:8}}>
+<button
+onClick={()=>setP("watch")}
+style={{background:"#e91e63",
+color:"white",border:0,borderRadius:20,
+padding:"6px 12px",fontSize:12}}>
+🎬 Watch Together
+</button>
+</div>
+<div style={{flex:1,padding:12}}>
+{ms.map((m,i)=>(
+<div key={i}
+style={{background:i%2?"#005c4b":"#202c33",
+padding:8,borderRadius:10,margin:6,
+maxWidth:"82%",
+marginLeft:i%2?"auto":0}}>
+{m.t==="x" && m.c}
+{m.t==="i" && (
+<img src={m.c}
+style={{width:"100%"}} />
+)}
+{m.t==="v" && (
+<video src={m.c} controls
+style={{width:"100%"}} />
+)}
+</div>
+))}
+</div>
+<div style={{display:"flex",
+margin:12,gap:6}}>
+<input
+type="file"
+ref={fr}
+accept="image/*,video/*"
+onChange={file}
+style={{display:"none"}}
+/>
+<button
+onClick={()=>fr.current.click()}
+style={{background:"#2a3942",
+color:"white",border:0,
+borderRadius:"50%",width:42,height:42}}>
+📎
+</button>
+<input
+value={inp}
+onChange={e=>setInp(e.target.value)}
+placeholder="Type..."
+style={{flex:1,padding:10,
+borderRadius:20,border:0}}
+/>
+<button
+onClick={send}
+style={{background:"#00a884",
+color:"white",border:0,
+borderRadius:"50%",width:42,height:42}}>
+➤
+</button>
+</div>
+</div>
+);
+}
+  return(
+<div style={{background:"#111b21",
+color:"white",minHeight:"100vh",
+paddingBottom:64}}>
+<div style={{background:"#0b141a",
+padding:12,display:"flex",
+justifyContent:"space-between"}}>
+<b style={{color:"#00a884",
+fontSize:20}}>
+Speeko
+</b>
+<span>🔍 ⋮</span>
+</div>
+
+{p==="chats" && (
+<div style={{padding:12}}>
+<input
+value={q}
+onChange={e=>setQ(e.target.value)}
+placeholder="Search..."
+style={{width:"100%",padding:8,
+borderRadius:20,border:0,
+background:"#202c33",color:"white",
+boxSizing:"border-box"}}
+/>
+<input
+value={nn}
+onChange={e=>setNn(e.target.value)}
+placeholder="Name"
+style={{width:"100%",padding:8,
+marginTop:8,boxSizing:"border-box"}}
+/>
+<input
+value={nm}
+onChange={e=>setNm(e.target.value)}
+placeholder="Number"
+style={{width:"100%",padding:8,
+marginTop:6,boxSizing:"border-box"}}
+/>
+<button
+onClick={save}
+style={{background:"#00a884",
+color:"white",border:0,padding:9,
+borderRadius:8,width:"100%",
+marginTop:6}}>
++ Add Contact
+</button>
+{f2.map((c,i)=>(
+<div key={i}
+onClick={()=>{setS(c);setInC(true)}}
+style={{padding:10,
+borderBottom:"1px solid #222",
+display:"flex",gap:10}}>
+<div style={{background:"#00a884",
+width:38,height:38,borderRadius:"50%",
+display:"flex",alignItems:"center",
+justifyContent:"center"}}>
+{c.n[0]}
+</div>
+<div>
+<div>{c.n}</div>
+<div style={{fontSize:11,
+color:"#999"}}>
+{c
