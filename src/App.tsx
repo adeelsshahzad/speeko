@@ -375,3 +375,38 @@ export default function App() {
           <h3>Settings</h3>
           <p>Profile</p>
           <p
+                      <p>Privacy</p>
+          <p>Notifications</p>
+        </div>
+      )}
+
+      <div style={nav}>
+        <button style={nbtn} onClick={() => setP("chats")}>
+          <span style={p === "chats" ? active : {}}>💬</span>
+          <br />
+          Chats
+        </button>
+        <button style={nbtn} onClick={() => setP("updates")}>
+          <span>🟢</span>
+          <br />
+          Updates
+        </button>
+        <button style={nbtn} onClick={() => setP("community")}>
+          <span>👥</span>
+          <br />
+          Community
+        </button>
+        <button style={nbtn} onClick={() => setP("calls")}>
+          <span>📞</span>
+          <br />
+          Calls
+        </button>
+        <button style={nbtn} onClick={() => setP("settings")}>
+          <span>⚙️</span>
+          <br />
+          Settings
+        </button>
+      </div>
+    </div>
+  );
+}
