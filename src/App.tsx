@@ -1,75 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-
-export default function App() {
-  const [page, setPage] = useState("contacts");
-  const [contacts, setContacts] = useState<any[]>([
-    { name: "Ammi", number: "0300-1234567" },
-    { name: "Abu", number: "0301-7654321" },
-    { name: "Bhai", number: "0321-1112222" },
-  ]);
-  const [selected, setSelected] = useState<any>(
-    { name: "Ammi", number: "0300-1234567" }
-  );
-  const [showAdd, setShowAdd] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [search, setSearch] = useState("");
-  const [msgs, setMsgs] = useState<any[]>([
-    { type: "text", content: "Hello" },
-    { type: "text", content: "Helloo" },
-  ]);
-  const [input, setInput] = useState("");
-  const [lang, setLang] = useState("en");
-  const [callType, setCallType] = useState<any>(null);
-  const [callTime, setCallTime] = useState(0);
-  const fileRef: any = useRef(null);
-  const videoRef: any = useRef(null);
-
-  useEffect(() => {
-    if (!callType) return;
-    const t: any = setInterval(() => {
-      setCallTime((s: any) => s + 1);
-    }, 1000);
-    return () => clearInterval(t);
-  }, [callType]);
-
-  useEffect(() => {
-    if (callType === "video" && videoRef.current) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((s: any) => {
-          videoRef.current.srcObject = s;
-        })
-        .catch(() => {});
-    }
-  }, [callType]);
-
-  const saveContact = () => {
-    if (!newName.trim()) return;
-    if (!newNumber.trim()) return;
-    const c = { name: newName, number: newNumber };
-    setContacts([...contacts, c]);
-    setSelected(c);
-    setNewName("");
-    setNewNumber("");
-    setShowAdd(false);
-    setPage("chats");
-  };
-
-  const sendMsg = () => {
-    if (!input.trim()) return;
-    setMsgs([...msgs, { type: "text", content: input }]);
-    setInput("");
-  };
-
-  const onFile = (e: any) => {
-    const f = e.target.files[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    const isVideo = f.type.startsWith("video");
-    const t = isVideo ? "video" : "image";
-    setMsgs([...msgs, { type: t, content: url }]);
-    e.target.value = "";
-  };
-
-  const filtered = contacts.filter((c: any) => {
+export default function App(){
+const [page,setPage]=useState("contacts");
+const [contacts,setContacts]=useState<any[]>([{name:"Ammi",number:"0300-1234567"},{name:"Abu",number:"0301-7654321"},{name:"Bhai",number:"0321-1112222"}]);
+const [sel,setSel]=useState<any>({name:"Ammi",number:"0300-1234567"});
+const [show,setShow]=useState(false);
+const [nn,setNn]=useState("");const [num,setNum]=useState("");const [search,setSearch]=useState("");
+const [msgs,setMsgs]=useState<any[]>([{type:"text",content:"Hello"},{type:"text",content:"Helloo"}]);
+const [input,setInput]=useState("");const [lang,setLang]=useState("en");
+const [call,setCall]=useState<any>(null);const [ct,setCt]=useState(0);
+const fileRef:any=useRef(null);const videoRef:any=useRef(null);
+useEffect(()=>{if(!call)return;const t:any=setInterval(()=>setCt((s:any)=>s+1),1000);return()=>clearInterval(t);},[call]);
+useEffect(()=>{if(call==="video"&&videoRef.current){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((s:any)=>{videoRef.current.srcObject=s;}).catch(()=>{});}},[call]);
+const save=()=>{if(!nn.trim()||!num.trim())return;const c={name:nn,number:num};setContacts([...contacts,c]);setSel(c);setNn("");setNum("");setShow(false);setPage("chats");};
+const send=()=>{if(!input.trim())return;setMsgs([...msgs,{type:"text",content:input}]);setInput("");};
+const onFile=(e:any)=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);const t=f.type.startsWith("video")?"video":"image";setMsgs([...msgs,{type:t,content:u}]);e.target.value="";};
+const filt=contacts.filter((c:any)=>c.name.toLowerCase().includes(search.toLowerCase())||c.number.includes(search));
+const fmt=(s:any)=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+const tab=(n:any)=>({background:page===n?"#00a884":"#2a3942",color:"white",border:0,fontSize:12,padding:"7px 11px",borderRadius:20});
+if(call){return(<div style={{background:"#111b21",color:"white",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:"#00a884",width:90,height:90,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:36}}>{sel.name.charAt(0)}</div><h2>{sel.name}</h2><p style={{color:"#aaa"}}>{call==="video"?"Video Call":"Voice Call"} - {fmt(ct)}</p>{call==="video"&&<video ref={videoRef} autoPlay muted playsInline style={{width:"100%",maxWidth:320,borderRadius:14}}/>}{call==="voice"&&<p style={{fontSize:40}}>🎙️</p>}<button onClick={()=>{setCall(null);setCt(0);setPage("chats");}} style={{background:"red",color:"white",border:0,width:52,height:52,borderRadius:"50%",fontSize:20,marginTop:20}}>📞</button></div>);}
+return(<div style={{background:"#111b21",color:"white",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+<div style={{background:"#0b141a",padding:12}}><b style={{color:"#00a884",fontSize:20}}>Speeko</b><div style={{display:"flex",gap:4,marginTop:9}}><button onClick={()=>setPage("contacts")} style={tab("contacts") as any}>Contacts</button><button onClick={()=>setPage("chats")} style={tab("chats") as any}>Chats</button><button onClick={()=>setPage("calls")} style={tab("calls") as any}>Calls</button><button onClick={()=>setPage("settings")} style={tab("settings") as any}>Settings</button></div></div>
+{page==="contacts"&&<div style={{padding:12}}><h3>Contacts ({contacts.length})</h3><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Search..." style={{width:"100%",padding:8,borderRadius:20,border:0,background:"#202c33",color:"white"}}/><button onClick={()=>setShow(true)} style={{background:"#00a884",color:"white",border:0,borderRadius:8,padding:9,marginTop:8,width:"100%"}}>+ Add Contact</button>{show&&<div style={{background:"#202c33",padding:12,borderRadius:10,marginTop:10}}><input value={nn} onChange={(e)=>setNn(e.target.value)} placeholder="Name" style={{width:"100%",padding:9,marginBottom:7}}/><input value={num} onChange={(e)=>setNum(e.target.value)} placeholder="Number" style={{width:"100%",padding:9,marginBottom:7}}/><button onClick={save} style={{background:"#00a884",color:"white",padding:9,border:0,borderRadius:8,width:"100%"}}>Save</button></div>}{filt.map((c:any,i:any)=><div key={i} onClick={()=>{setSel(c);setPage("chats");}} style={{padding:10,borderBottom:"1px solid #222"}}><div>{c.name}</div><div style={{fontSize:11,color:"#999"}}>{c.number}</div></div>)}</div>}
+{page==="chats"&&<><div style={{display:"flex",padding:10,background:"#202c33",gap:10,alignItems:"center"}}><div style={{flex:1}}>{sel.name}</div><button onClick={()=>setCall("voice")} style={{background:"transparent",border:0,fontSize:18}}>📞</button><button onClick={()=>setCall("video")} style={{background:"transparent",border:0,fontSize:18}}>📹</button></div><div style={{flex:1,padding:12}}>{msgs.map((m:any,i:any)=><div key={i} style={{background:i%2===1?"#005c4b":"#202c33",padding:8,borderRadius:10,margin:6,maxWidth:"82%",marginLeft:i%2===1?"auto":0}}>{m.type==="text"&&m.content}{m.type==="image"&&<img src={m.content} style={{width:"100%",borderRadius:8}}/>}{m.type==="video"&&<video src={m.content} controls style={{width:"100%",borderRadius:8}}/>}</div>)}</div><div style={{display:"flex",margin:12,gap:6,alignItems:"center"}}><input type="file" ref={fileRef} accept="image/*,video/*" onChange={onFile} style={{display:"none"}}/><button onClick={()=>fileRef.current?.click()} style={{background:"#2a3942",color:"white",border:0,borderRadius:"50%",width:42,height:42,fontSize:18}}>📎</button><input value={input} onChange={(e)=>setInput(e.target.value)} placeholder="Type a message..." style={{flex:1,padding:10,borderRadius:20,border:0}} onKeyDown={(e:any)=>{if(e.key==="Enter")send();}}/><button onClick={send} style={{background:"#00a884",color:"white",border:0,borderRadius:"50%",width:42,height:42}}>➤</button></div><p style={{textAlign:"center",fontSize:11,color:"#777"}}>Photo & Video supported</p></>}
+{page==="calls"&&<div style={{padding:16}}><h3>Calls - {sel.name}</h3><button onClick={()=>setCall("voice")} style={{background:"#00a884",color:"white",border:0,padding:10,borderRadius:20,marginRight:8}}>📞 Voice Call</button><button onClick={()=>setCall("video")} style={{background:"#25D366",color:"white",border:0,padding:10,borderRadius:20}}>📹 Video Call</button></div>}
+{page==="settings"&&<div style={{padding:16}}><h3>Settings</h3><p>Language</p><select value={lang} onChange={(e)=>setLang(e.target.value)} style={{width:"100%",padding:10}}><option value="en">English</option><option value="ur">Urdu</option><option value="hi">Hindi</option><option value="ar">Arabic</option><option value="zh">Chinese</option><option value="fr">French</option><option value="es">Spanish</option><option value="tr">Turkish</option><option value="ru">Russian</option><option value="ko">Korean</option><option value="ja">Japanese</option><option value="de">German</option><option value="it">Italian</option><option value="pt">Portuguese</option><option value="el">Greek</option></select></div>}
+</div>);}
