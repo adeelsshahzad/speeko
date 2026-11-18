@@ -4,7 +4,7 @@ export default function App() {
   const [s, setS] = useState("Ammi");
   const [inC, setInC] = useState(false);
   const [txt, setTxt] = useState("");
-  const [msgs, setMsgs] = useState(["Hi"]);
+  const [msgs, setMsgs] = useState<any[]>([{ type: "text", text: "Hi", time: "10:30 AM" }]);
   const [theme, setTheme] = useState(1);
   const [call, setCall] = useState("");
   const [callType, setCallType] = useState("Audio");
@@ -20,14 +20,21 @@ export default function App() {
   const [fav, setFav] = useState(["Ammi", "My Moti"]);
   const [starred, setStarred] = useState(["My Moti - ❤️ Star Message"]);
   const [showUnread, setShowUnread] = useState(true);
+  const [viewMedia, setViewMedia] = useState<any>(null);
   const chats = [{ n: "Ammi", m: "Beta khana kha liya?", t: "10:30 AM" }, { n: "Bhai", m: "Kal aa raha hoon", t: "Yesterday" }, { n: "Ayesha", m: "Hi, kaisi ho?", t: "Yesterday" }, { n: "My Moti", m: "❤️ I love you", t: "9:15 AM" }, { n: "Ali", m: "Match dekh rahe ho?", t: "15/11/2026" }, { n: "Sara", m: "Kal milte hain", t: "14/11/2026" }, { n: "Mama", m: "Salam beta", t: "12/11/2026" }, { n: "Baba", m: "Theek ho?", t: "10/11/2026" }];
   const themes = ["#ECE5DD", "#1F2C34", "#E8F5E9", "#E3F2FD", "#FCE4EC", "#FFF3E0"];
   const names = ["WhatsApp", "Dark Grey", "Green", "Blue", "Pink", "Orange"];
   const langs = ["Urdu", "Hindi", "English", "Arabic", "Chinese", "Japanese", "German", "Greek", "Portuguese", "Spanish"];
   const bg = themes[theme];
-  function send() { if (!txt) return; setMsgs([...msgs, txt]); setTxt(""); setEmoji(false); }
+  function send() { if (!txt) return; setMsgs([...msgs, { type: "text", text: txt, time: "Now" }]); setTxt(""); setEmoji(false); }
   function startCall(n: string, t: string) { setS(n); setCallType(t); setCall(n); }
-  function onPhoto(e: any) { const f = e.target.files[0]; if (!f) return; setMsgs([...msgs, "📷 Photo Sent: " + f.name]); }
+  function onPhoto(e: any) {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const items = (files as any[]).map((f: any) => ({ type: f.type.startsWith("video") ? "video" : "photo", url: URL.createObjectURL(f), name: f.name, time: "Now" }));
+    if (items.length === 1) setMsgs([...msgs, items[0]]);
+    else setMsgs([...msgs, { type: "collage", items, time: "Now" }]);
+  }
   function onMainPhoto(e: any) { const f = e.target.files[0]; if (!f) return; alert("Photo Li Gayi: " + f.name); }
   const row = { display: "flex", alignItems: "center", padding: "10px 12px", background: "#1F2C34", borderBottom: "1px solid #2A3B47", color: "white" };
   const av = { width: "42px", height: "42px", background: "#3A4A54", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "10px", fontSize: "19px", color: "white", fontWeight: "bold" as const };
@@ -35,6 +42,14 @@ export default function App() {
   const srow = { padding: "12px", borderBottom: "1px solid #eee", background: "white", color: "black" };
   const tabStyle = (t: string) => ({ padding: "7px 16px", borderRadius: "20px", border: "1px solid #3A4A54", background: tab === t ? "#1A3A2A" : "#111B21", color: tab === t ? "#00FF7F" : "#E0E0E0", fontSize: "15px", whiteSpace: "nowrap" as const, fontWeight: tab === t ? "bold" as const : "normal" as const });
   const menuItem = { padding: "13px 16px", fontSize: "17px", color: "white", borderBottom: "1px solid #2A3B47" };
+  function MediaView({ m }: any) {
+    if (m.type === "text") return <p style={{ background: "#DCF8C6", color: "black", padding: "8px", margin: "6px", borderRadius: "10px", maxWidth: "80%" }} onClick={() => { if (!starred.includes(s + " - " + m.text)) setStarred([...starred, s + " - " + m.text]); }}>{m.text} <span style={{ fontSize: "11px" }}>⭐ {m.time}</span></p>;
+    if (m.type === "photo") return <div style={{ background: "#075E54", padding: "6px", margin: "6px", borderRadius: "12px", maxWidth: "85%" }}><img src={m.url} onClick={() => setViewMedia(m)} style={{ width: "100%", borderRadius: "10px", display: "block" }} /><p style={{ color: "white", fontSize: "12px", textAlign: "right" as const, margin: "4px 0 0" }}>{m.time} ✓✓</p></div>;
+    if (m.type === "video") return <div style={{ background: "#075E54", padding: "6px", margin: "6px", borderRadius: "12px", maxWidth: "85%", position: "relative" as const }}><video src={m.url} style={{ width: "100%", borderRadius: "10px", display: "block" }} /><div onClick={() => setViewMedia(m)} style={{ position: "absolute" as const, top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "60px", height: "60px", background: "rgba(0,0,0,0.6)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "30px", color: "white" }}>▶</div><p style={{ color: "white", fontSize: "12px", textAlign: "right" as const, margin: "4px 0 0" }}>{m.time} ✓✓</p></div>;
+    if (m.type === "collage") return <div style={{ background: "#075E54", padding: "6px", margin: "6px", borderRadius: "12px", maxWidth: "85%" }}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>{m.items.map((it: any, i: number) => (<div key={i} style={{ position: "relative" as const }} onClick={() => setViewMedia(it)}>{it.type === "video" ? <><video src={it.url} style={{ width: "100%", height: "110px", objectFit: "cover" as const, borderRadius: "8px" }} /><span style={{ position: "absolute" as const, top: "35%", left: "40%", fontSize: "28px" }}>▶</span></> : <img src={it.url} style={{ width: "100%", height: "110px", objectFit: "cover" as const, borderRadius: "8px" }} />}</div>))}</div><p style={{ color: "white", fontSize: "12px", textAlign: "right" as const, margin: "4px 0 0" }}>{m.time} ✓✓</p></div>;
+    return null;
+  }
+  if (viewMedia) return (<div style={{ background: "black", minHeight: "100vh", color: "white", textAlign: "center" as const }}><button onClick={() => setViewMedia(null)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", position: "absolute" as const, left: "10px", top: "10px" }}>←</button><p style={{ paddingTop: "10px" }}>{viewMedia.name || "Media"}</p>{viewMedia.type === "video" ? <video src={viewMedia.url} controls autoPlay style={{ width: "100%", marginTop: "20px" }} /> : <img src={viewMedia.url} style={{ width: "100%", marginTop: "20px" }} />}</div>);
   if (call) return (
     <div style={{ background: "#111B21", color: "white", minHeight: "100vh", textAlign: "center", paddingTop: "80px" }}>
       <div style={{ width: "100px", height: "100px", background: "#00A8E8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", margin: "0 auto" }}>{call[0]}</div>
@@ -56,12 +71,12 @@ export default function App() {
         <span style={{ fontSize: "22px", marginLeft: "20px" }} onClick={() => startCall(s, "Video")}>📹</span>
         <span style={{ fontSize: "22px", marginLeft: "20px" }}>⋮</span>
       </div>
-      <div style={{ padding: "8px", paddingBottom: "90px" }}>{msgs.map((m, i) => (<p key={i} style={{ background: "#DCF8C6", color: "black", padding: "8px", margin: "6px", borderRadius: "10px", maxWidth: "80%" }} onClick={() => { if (!starred.includes(s + " - " + m)) setStarred([...starred, s + " - " + m]); }}>{m} <span style={{ fontSize: "11px" }}>⭐ Star</span></p>))}</div>
+      <div style={{ padding: "8px", paddingBottom: "90px" }}>{msgs.map((m, i) => (<MediaView key={i} m={m} />))}</div>
       {emoji && <div style={{ background: "white", padding: "8px", display: "flex", gap: "8px", fontSize: "22px", position: "fixed" as const, bottom: "60px", left: 0, right: 0 }}>{["😀", "😂", "❤️", "😍", "👍", "🙏", "🎉", "🔥"].map((e) => (<span key={e} onClick={() => setTxt(txt + e)}>{e}</span>))}</div>}
       <div style={{ display: "flex", padding: "8px", position: "fixed" as const, bottom: 0, left: 0, right: 0, background: "#111B21", alignItems: "center", boxSizing: "border-box" as const }}>
         <button onClick={() => setEmoji(!emoji)} style={{ fontSize: "22px", background: "none", border: "none" }}>😀</button>
         <button style={{ background: "none", border: "none", color: "white" }}>GIF</button>
-        <label style={{ fontSize: "20px", marginLeft: "6px" }}>📷<input type="file" accept="image/*" onChange={onPhoto} style={{ display: "none" }} /></label>
+        <label style={{ fontSize: "20px", marginLeft: "6px" }}>📷<input type="file" accept="image/*,video/*" multiple onChange={onPhoto} style={{ display: "none" }} /></label>
         <input value={txt} onChange={(e) => setTxt(e.target.value)} placeholder="Message..." style={{ flex: 1, padding: "10px", borderRadius: "20px", border: "none", marginLeft: "5px", minWidth: 0, background: "white", color: "black" }} />
         <button onClick={send} style={{ background: "#25D366", color: "white", border: "none", borderRadius: "50%", width: "42px", height: "42px", marginLeft: "6px", flexShrink: 0 as const }}>➤</button>
       </div>
