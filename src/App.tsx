@@ -18,35 +18,56 @@ export default function App() {
     setTxt("");
   }
 
+  const page = {
+    width: "100%",
+    minHeight: "100vh",
+    background: "white",
+    fontFamily: "sans-serif",
+    paddingBottom: "80px",
+  };
+
   const top = {
     background: green,
     color: "white",
-    padding: "12px",
+    padding: "15px",
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   };
 
   const tab = {
     background: green,
     color: "white",
     display: "flex",
-    justifyContent: "space-around",
-    padding: "10px",
+    paddingBottom: "10px",
   };
 
-  const btn = {
+  const tbtn = {
+    flex: 1,
     background: "none",
     border: "none",
     color: "white",
-    fontSize: "15px",
+    fontSize: "16px",
+    padding: "8px",
   };
 
   const nav = {
     display: "flex",
-    justifyContent: "space-around",
-    padding: "10px",
-    borderTop: "1px solid #ddd",
+    position: "fixed" as const,
+    bottom: 0,
+    left: 0,
+    right: 0,
     background: "white",
+    borderTop: "1px solid #ddd",
+    padding: "10px",
+  };
+
+  const nbtn = {
+    flex: 1,
+    background: "none",
+    border: "none",
+    fontSize: "14px",
+    padding: "8px",
   };
 
   const plus = {
@@ -56,18 +77,38 @@ export default function App() {
     width: "55px",
     height: "55px",
     borderRadius: "50%",
-    fontSize: "30px",
+    fontSize: "28px",
     position: "fixed" as const,
-    bottom: "70px",
-    right: "20px",
+    bottom: "75px",
+    right: "15px",
+  };
+
+  const row = {
+    display: "flex",
+    alignItems: "center",
+    padding: "12px",
+    borderBottom: "1px solid #eee",
+  };
+
+  const av = {
+    width: "48px",
+    height: "48px",
+    background: "#ddd",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: "12px",
+    fontSize: "20px",
+    flexShrink: 0 as const,
   };
 
   if (inC) {
     return (
-      <div>
+      <div style={page}>
         <div style={top}>
           <button
-            style={btn}
+            style={{ color: "white", background: "none", border: "none" }}
             onClick={() => setInC(false)}
           >
             ← Back
@@ -80,20 +121,21 @@ export default function App() {
             key={i}
             style={{
               background: "#DCF8C6",
-              padding: "8px",
-              margin: "8px",
-              borderRadius: "8px",
+              padding: "10px",
+              margin: "10px",
+              borderRadius: "10px",
+              maxWidth: "80%",
             }}
           >
             {m}
           </p>
         ))}
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", padding: "10px" }}>
           <input
             value={txt}
             onChange={(e) => setTxt(e.target.value)}
             placeholder="Message..."
-            style={{ flex: 1, padding: "10px" }}
+            style={{ flex: 1, padding: "12px", borderRadius: "20px" }}
           />
           <button
             onClick={send}
@@ -101,10 +143,13 @@ export default function App() {
               background: light,
               color: "white",
               border: "none",
-              padding: "10px",
+              borderRadius: "50%",
+              width: "45px",
+              height: "45px",
+              marginLeft: "8px",
             }}
           >
-            Send
+            ➤
           </button>
         </div>
       </div>
@@ -112,20 +157,20 @@ export default function App() {
   }
 
   return (
-    <div style={{ background: "white" }}>
+    <div style={page}>
       <div style={top}>
         <b style={{ fontSize: "22px" }}>Speeko</b>
-        <span>🔍 ⋮</span>
+        <span>🔍 &nbsp; ⋮</span>
       </div>
 
       <div style={tab}>
-        <button style={btn} onClick={() => setP("chats")}>
+        <button style={tbtn} onClick={() => setP("chats")}>
           Chats
         </button>
-        <button style={btn} onClick={() => setP("updates")}>
+        <button style={tbtn} onClick={() => setP("updates")}>
           Updates
         </button>
-        <button style={btn} onClick={() => setP("calls")}>
+        <button style={tbtn} onClick={() => setP("calls")}>
           Calls
         </button>
       </div>
@@ -135,32 +180,16 @@ export default function App() {
           {chats.map((c) => (
             <div
               key={c}
+              style={row}
               onClick={() => {
                 setS(c);
                 setInC(true);
               }}
-              style={{
-                display: "flex",
-                padding: "12px",
-                borderBottom: "1px solid #eee",
-              }}
             >
-              <div
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  background: "#ddd",
-                  borderRadius: "50%",
-                  textAlign: "center",
-                  lineHeight: "45px",
-                  marginRight: "12px",
-                }}
-              >
-                {c[0]}
-              </div>
+              <div style={av}>{c[0]}</div>
               <div>
                 <b>{c}</b>
-                <p style={{ margin: 0 }}>Hi</p>
+                <p style={{ margin: 0, color: "#666" }}>Hi</p>
               </div>
             </div>
           ))}
@@ -168,10 +197,12 @@ export default function App() {
       )}
 
       {p === "updates" && (
-        <div style={{ padding: "12px" }}>
+        <div style={{ padding: "15px" }}>
           <h3>Status</h3>
-          <p>Ammi - New Status</p>
-          <p>Bhai - New Status</p>
+          <div style={row}>
+            <div style={av}>A</div>
+            <b>Ammi - New Status</b>
+          </div>
           <h3>Watch</h3>
           <p>Video 1</p>
           <button onClick={() => setLike(like + 1)}>
@@ -181,28 +212,38 @@ export default function App() {
       )}
 
       {p === "calls" && (
-        <div style={{ padding: "12px" }}>
+        <div>
           {chats.map((c) => (
-            <p key={c}>
-              {c} - Missed Call
-              <button style={{ marginLeft: "10px" }}>
-                📞
-              </button>
-              <button>📹</button>
-            </p>
+            <div key={c} style={row}>
+              <div style={av}>{c[0]}</div>
+              <div style={{ flex: 1 }}>
+                <b>{c}</b>
+                <p style={{ margin: 0 }}>Missed Call</p>
+              </div>
+              <span style={{ fontSize: "22px" }}>📞</span>
+              <span style={{ fontSize: "22px", marginLeft: "15px" }}>
+                📹
+              </span>
+            </div>
           ))}
         </div>
       )}
 
       <div style={nav}>
-        <button onClick={() => setP("chats")}>
-          💬 Chats
+        <button style={nbtn} onClick={() => setP("chats")}>
+          💬
+          <br />
+          Chats
         </button>
-        <button onClick={() => setP("updates")}>
-          🟢 Updates
+        <button style={nbtn} onClick={() => setP("updates")}>
+          🟢
+          <br />
+          Updates
         </button>
-        <button onClick={() => setP("calls")}>
-          📞 Calls
+        <button style={nbtn} onClick={() => setP("calls")}>
+          📞
+          <br />
+          Calls
         </button>
       </div>
 
