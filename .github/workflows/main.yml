@@ -15,14 +15,14 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
       - name: Install
         run: npm install
       - name: Build Web
         run: npm run build
       - name: Add Capacitor
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core@6.2.2 @capacitor/cli@6.2.2 @capacitor/android@6.2.2
           npx cap init Speeko com.speeko.app --web-dir=dist
           npx cap add android
           npx cap sync android
