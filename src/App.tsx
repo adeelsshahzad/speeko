@@ -9,8 +9,8 @@ export default function App() {
   const [like, setLike] = useState(0);
 
   const chats = ["Ammi", "Bhai", "Ayesha"];
-  const updates = ["Ammi", "Bhai", "Ayesha"];
-  const reels = ["Video 1", "Video 2", "Video 3"];
+  const green = "#075E54";
+  const light = "#25D366";
 
   function send() {
     if (!txt) return;
@@ -18,106 +18,197 @@ export default function App() {
     setTxt("");
   }
 
+  const top = {
+    background: green,
+    color: "white",
+    padding: "12px",
+    display: "flex",
+    justifyContent: "space-between",
+  };
+
+  const tab = {
+    background: green,
+    color: "white",
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "10px",
+  };
+
+  const btn = {
+    background: "none",
+    border: "none",
+    color: "white",
+    fontSize: "15px",
+  };
+
+  const nav = {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "10px",
+    borderTop: "1px solid #ddd",
+    background: "white",
+  };
+
+  const plus = {
+    background: light,
+    color: "white",
+    border: "none",
+    width: "55px",
+    height: "55px",
+    borderRadius: "50%",
+    fontSize: "30px",
+    position: "fixed" as const,
+    bottom: "70px",
+    right: "20px",
+  };
+
   if (inC) {
     return (
       <div>
-        <button onClick={() => setInC(false)}>
-          Back
-        </button>
-        <h3>{s}</h3>
-        <p>Online</p>
+        <div style={top}>
+          <button
+            style={btn}
+            onClick={() => setInC(false)}
+          >
+            ← Back
+          </button>
+          <b>{s}</b>
+          <span>📞 📹</span>
+        </div>
         {msgs.map((m, i) => (
-          <p key={i}>{m}</p>
+          <p
+            key={i}
+            style={{
+              background: "#DCF8C6",
+              padding: "8px",
+              margin: "8px",
+              borderRadius: "8px",
+            }}
+          >
+            {m}
+          </p>
         ))}
-        <input
-          value={txt}
-          onChange={(e) => setTxt(e.target.value)}
-          placeholder="Message..."
-        />
-        <button onClick={send}>Send</button>
-        <button>Mic</button>
-        <button>Photo</button>
+        <div style={{ display: "flex" }}>
+          <input
+            value={txt}
+            onChange={(e) => setTxt(e.target.value)}
+            placeholder="Message..."
+            style={{ flex: 1, padding: "10px" }}
+          />
+          <button
+            onClick={send}
+            style={{
+              background: light,
+              color: "white",
+              border: "none",
+              padding: "10px",
+            }}
+          >
+            Send
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>Speeko</h2>
+    <div style={{ background: "white" }}>
+      <div style={top}>
+        <b style={{ fontSize: "22px" }}>Speeko</b>
+        <span>🔍 ⋮</span>
+      </div>
+
+      <div style={tab}>
+        <button style={btn} onClick={() => setP("chats")}>
+          Chats
+        </button>
+        <button style={btn} onClick={() => setP("updates")}>
+          Updates
+        </button>
+        <button style={btn} onClick={() => setP("calls")}>
+          Calls
+        </button>
+      </div>
 
       {p === "chats" && (
         <div>
-          <h3>Chats</h3>
-          <input placeholder="Search..." />
           {chats.map((c) => (
-            <p
+            <div
               key={c}
               onClick={() => {
                 setS(c);
                 setInC(true);
               }}
+              style={{
+                display: "flex",
+                padding: "12px",
+                borderBottom: "1px solid #eee",
+              }}
             >
-              {c} - Hi
-            </p>
-          ))}
-        </div>
-      )}
-
-      {p === "calls" && (
-        <div>
-          <h3>Calls</h3>
-          {chats.map((c) => (
-            <p key={c}>
-              {c}
-              <button>Voice</button>
-              <button>Video</button>
-            </p>
-          ))}
-        </div>
-      )}
-
-      {p === "updates" && (
-        <div>
-          <h3>Updates</h3>
-          <button>My Status</button>
-          {updates.map((u) => (
-            <p key={u}>{u} - New Status</p>
-          ))}
-        </div>
-      )}
-
-      {p === "watch" && (
-        <div>
-          <h3>Watch</h3>
-          {reels.map((r) => (
-            <div key={r}>
-              <p>{r}</p>
-              <button
-                onClick={() => setLike(like + 1)}
+              <div
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  background: "#ddd",
+                  borderRadius: "50%",
+                  textAlign: "center",
+                  lineHeight: "45px",
+                  marginRight: "12px",
+                }}
               >
-                Like {like}
-              </button>
-              <button>Comment</button>
-              <button>Share</button>
+                {c[0]}
+              </div>
+              <div>
+                <b>{c}</b>
+                <p style={{ margin: 0 }}>Hi</p>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      <div>
+      {p === "updates" && (
+        <div style={{ padding: "12px" }}>
+          <h3>Status</h3>
+          <p>Ammi - New Status</p>
+          <p>Bhai - New Status</p>
+          <h3>Watch</h3>
+          <p>Video 1</p>
+          <button onClick={() => setLike(like + 1)}>
+            ❤️ Like {like}
+          </button>
+        </div>
+      )}
+
+      {p === "calls" && (
+        <div style={{ padding: "12px" }}>
+          {chats.map((c) => (
+            <p key={c}>
+              {c} - Missed Call
+              <button style={{ marginLeft: "10px" }}>
+                📞
+              </button>
+              <button>📹</button>
+            </p>
+          ))}
+        </div>
+      )}
+
+      <div style={nav}>
         <button onClick={() => setP("chats")}>
-          Chats
-        </button>
-        <button onClick={() => setP("calls")}>
-          Calls
+          💬 Chats
         </button>
         <button onClick={() => setP("updates")}>
-          Updates
+          🟢 Updates
         </button>
-        <button onClick={() => setP("watch")}>
-          Watch
+        <button onClick={() => setP("calls")}>
+          📞 Calls
         </button>
       </div>
+
+      <button style={plus} onClick={() => setP("calls")}>
+        +
+      </button>
     </div>
   );
 }
