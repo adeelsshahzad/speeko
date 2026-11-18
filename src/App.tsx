@@ -44,3 +44,6 @@ if(inC)return(
 </div></div>);
 return(
 <div style={{background:"#111b21",color:"white",minHeight:"100vh",padding
+  
+</div></div>);
+}
