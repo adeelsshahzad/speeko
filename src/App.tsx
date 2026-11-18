@@ -1,37 +1,34 @@
 import { useState, useRef, useEffect } from "react";
 
-type Contact = { name: string; number: string };
-type Msg = { type: "text" | "image" | "video"; content: string };
-
 export default function App() {
   const [page, setPage] = useState("contacts");
-  const [contacts, setContacts] = useState<Contact[]>([
+  const [contacts, setContacts] = useState<any[]>([
     { name: "Ammi", number: "0300-1234567" },
     { name: "Abu", number: "0301-7654321" },
     { name: "Bhai", number: "0321-1112222" },
   ]);
-  const [selected, setSelected] = useState<Contact>({ name: "Ammi", number: "0300-1234567" });
+  const [selected, setSelected] = useState<any>({ name: "Ammi", number: "0300-1234567" });
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
-  const [msgs, setMsgs] = useState<Msg[]>([{ type: "text", content: "Hello" }, { type: "text", content: "Helloo" }]);
+  const [msgs, setMsgs] = useState<any[]>([{ type: "text", content: "Hello" }, { type: "text", content: "Helloo" }]);
   const [input, setInput] = useState("");
   const [lang, setLang] = useState("en");
-  const [callType, setCallType] = useState<"voice" | "video" | null>(null);
+  const [callType, setCallType] = useState<any>(null);
   const [callTime, setCallTime] = useState(0);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const fileRef: any = useRef(null);
+  const videoRef: any = useRef(null);
 
   useEffect(() => {
     if (!callType) return;
-    const t = setInterval(() => setCallTime(s => s + 1), 1000);
+    const t: any = setInterval(() => setCallTime((s: any) => s + 1), 1000);
     return () => clearInterval(t);
   }, [callType]);
 
   useEffect(() => {
     if (callType === "video" && videoRef.current) {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(s => { if (videoRef.current) videoRef.current.srcObject = s; }).catch(() => {});
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((s: any) => { videoRef.current.srcObject = s; }).catch(() => {});
     }
   }, [callType]);
 
@@ -58,14 +55,13 @@ export default function App() {
     e.target.value = "";
   };
 
-  const filtered = contacts.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.number.includes(search));
-  const tabStyle = (name: string) => ({
-    background: page === name ? "#00a884" : "#2a3942",
-    color: "white", border: 0, fontSize: 12, padding: "7px 11px", borderRadius: 20,
-    fontWeight: page === name ? "bold" as const : "normal" as const,
-  });
+  const filtered = contacts.filter((c: any) => c.name.toLowerCase().includes(search.toLowerCase()) || c.number.includes(search));
+  const fmt = (s: any) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
-  const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const getTab = (name: any) => {
+    const active = page === name;
+    return { background: active ? "#00a884" : "#2a3942", color: "white", border: 0, fontSize: 12, padding: "7px 11px", borderRadius: 20, fontWeight: active ? "bold" : "normal" };
+  };
 
   if (callType) {
     return (
@@ -76,4 +72,18 @@ export default function App() {
         {callType === "video" && <video ref={videoRef} autoPlay muted playsInline style={{ width: "100%", maxWidth: 320, borderRadius: 14, marginTop: 14, background: "#000" }} />}
         {callType === "voice" && <p style={{ fontSize: 40, marginTop: 20 }}>🎙️</p>}
         <div style={{ display: "flex", gap: 12, marginTop: 22 }}>
-          <button style={{ background: "#2a3942", color: "white", border: 0, width: 52
+          <button style={{ background: "#2a3942", color: "white", border: 0, width: 52, height: 52, borderRadius: "50%", fontSize: 20 }}>🎤</button>
+          <button style={{ background: "#2a3942", color: "white", border: 0, width: 52, height: 52, borderRadius: "50%", fontSize: 20 }}>🔊</button>
+          <button onClick={() => { setCallType(null); setCallTime(0); setPage("chats"); }} style={{ background: "red", color: "white", border: 0, width: 52, height: 52, borderRadius: "50%", fontSize: 20 }}>📞</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: "#111b21", color: "white", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "sans-serif" }}>
+      <div style={{ background: "#0b141a", padding: "10px 12px 12px 12px" }}>
+        <b style={{ color: "#00a884", fontSize: 20, display: "block", marginBottom: 9, marginLeft: 4 }}>Speeko</b>
+        <div style={{ background: "#1f2c34", padding: 4, borderRadius: 25, display: "flex", gap: 4 }}>
+          <button onClick={() => setPage("contacts")} style={getTab("contacts") as any}>Contacts</button>
+          <button onClick={() => setPage("chats")} style={getTab("
