@@ -68,5 +68,4 @@ return(
 <button onClick={()=>setP("communities")} style={{flex:1,background:"none",border:0,color:"white"}}>Groups</button>
 <button onClick={()=>setP("watch")} style={{flex:1,background:"none",border:0,color:"white"}}>Watch</button>
 <button onClick={()=>setP("calls")} style={{flex:1,background:"none",border:0,color:"white"}}>Calls</button>
-</div></div>);
 }
