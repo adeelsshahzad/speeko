@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 export default function App() {
   const [p, setP] = useState("chats");
   const [s, setS] = useState("Ammi");
@@ -23,13 +23,38 @@ export default function App() {
   const [viewMedia, setViewMedia] = useState<any>(null);
   const [delIdx, setDelIdx] = useState<number | null>(null);
   const [chatMenu, setChatMenu] = useState(false);
+  const [camOn, setCamOn] = useState(true);
+  const [micOn, setMicOn] = useState(true);
+  const videoRef = useRef<any>(null);
+  const streamRef = useRef<any>(null);
   const chats = [{ n: "Ammi", m: "Beta khana kha liya?", t: "10:30 AM" }, { n: "Bhai", m: "Kal aa raha hoon", t: "Yesterday" }, { n: "Ayesha", m: "Hi, kaisi ho?", t: "Yesterday" }, { n: "My Moti", m: "❤️ I love you", t: "9:15 AM" }, { n: "Ali", m: "Match dekh rahe ho?", t: "15/11/2026" }, { n: "Sara", m: "Kal milte hain", t: "14/11/2026" }, { n: "Mama", m: "Salam beta", t: "12/11/2026" }, { n: "Baba", m: "Theek ho?", t: "10/11/2026" }];
   const themes = ["#ECE5DD", "#1F2C34", "#E8F5E9", "#E3F2FD", "#FCE4EC", "#FFF3E0"];
   const names = ["WhatsApp", "Dark Grey", "Green", "Blue", "Pink", "Orange"];
   const langs = ["Urdu", "Hindi", "English", "Arabic", "Chinese", "Japanese", "German", "Greek", "Portuguese", "Spanish"];
   const bg = themes[theme];
   function send() { if (!txt) return; setMsgs([...msgs, { type: "text", text: txt, time: "Now" }]); setTxt(""); setEmoji(false); }
-  function startCall(n: string, t: string) { setS(n); setCallType(t); setCall(n); }
+  async function startCall(n: string, t: string) {
+    setS(n); setCallType(t); setCall(n); setCamOn(true); setMicOn(true);
+    if (t === "Video") {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        streamRef.current = stream;
+        setTimeout(() => { if (videoRef.current) videoRef.current.srcObject = stream; }, 200);
+      } catch (e) { alert("Camera ki permission dein - Allow dabayein!"); }
+    }
+  }
+  function endCall() {
+    if (streamRef.current) { streamRef.current.getTracks().forEach((tr: any) => tr.stop()); streamRef.current = null; }
+    setCall("");
+  }
+  function toggleCam() {
+    setCamOn(!camOn);
+    if (streamRef.current) streamRef.current.getVideoTracks().forEach((tr: any) => tr.enabled = !camOn);
+  }
+  function toggleMic() {
+    setMicOn(!micOn);
+    if (streamRef.current) streamRef.current.getAudioTracks().forEach((tr: any) => tr.enabled = !micOn);
+  }
   function onPhoto(e: any) {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -58,17 +83,33 @@ export default function App() {
     return null;
   }
   if (viewMedia) return (<div style={{ background: "black", minHeight: "100vh", color: "white", textAlign: "center" as const }}><button onClick={() => setViewMedia(null)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", position: "absolute" as const, left: "10px", top: "10px", zIndex: 99 }}>←</button><p style={{ paddingTop: "10px" }}>{viewMedia.name || "Media"}</p>{viewMedia.type === "video" ? <video src={viewMedia.url} controls autoPlay playsInline style={{ width: "100%", marginTop: "20px", background: "black" }} /> : <img src={viewMedia.url} style={{ width: "100%", marginTop: "20px" }} />}<br /><button onClick={() => setViewMedia(null)} style={{ marginTop: "20px", padding: "10px 20px", background: "#25D366", color: "white", border: "none", borderRadius: "10px" }}>Back</button></div>);
-  if (call) return (
-    <div style={{ background: "#111B21", color: "white", minHeight: "100vh", textAlign: "center", paddingTop: "80px" }}>
-      <div style={{ width: "100px", height: "100px", background: "#00A8E8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", margin: "0 auto" }}>{call[0]}</div>
-      <h2>{call}</h2><p>{callType} Calling...</p>
-      <div style={{ marginTop: "60px", display: "flex", justifyContent: "center", gap: "20px" }}>
-        <button style={{ width: "55px", height: "55px", borderRadius: "50%", border: "none", fontSize: "22px" }}>🎤</button>
-        <button style={{ width: "55px", height: "55px", borderRadius: "50%", border: "none", fontSize: "22px" }}>📹</button>
-        <button onClick={() => setCall("")} style={{ width: "55px", height: "55px", borderRadius: "50%", border: "none", background: "red", fontSize: "22px" }}>📞</button>
+  if (call) {
+    if (callType === "Video") return (
+      <div style={{ background: "#111B21", color: "white", minHeight: "100vh", position: "relative" as const, overflow: "hidden" as const }}>
+        <div style={{ width: "100%", height: "100vh", background: "#1F2C34", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" as const }}>
+          <div style={{ width: "90px", height: "90px", background: "#00A8E8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "36px" }}>{call[0]}</div>
+          <h2 style={{ margin: "12px 0 4px" }}>{call}</h2><p style={{ color: "#AEBAC1", margin: 0 }}>Video Calling... 📹</p><p style={{ color: "#25D366", fontSize: "13px" }}>Samne wale ke accept karne par uski video yahan aayegi</p>
+        </div>
+        <video ref={videoRef} autoPlay playsInline muted style={{ position: "absolute" as const, bottom: "110px", right: "12px", width: "130px", height: "180px", objectFit: "cover" as const, borderRadius: "12px", border: "2px solid white", background: "black", display: camOn ? "block" : "none" }} />
+        {!camOn && <div style={{ position: "absolute" as const, bottom: "110px", right: "12px", width: "130px", height: "180px", borderRadius: "12px", background: "#333", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "30px" }}>🚫📹</div>}
+        <div style={{ position: "absolute" as const, bottom: "20px", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "16px" }}>
+          <button onClick={toggleMic} style={{ width: "58px", height: "58px", borderRadius: "50%", border: "none", fontSize: "22px", background: micOn ? "white" : "red" }}>{micOn ? "🎤" : "🔇"}</button>
+          <button onClick={toggleCam} style={{ width: "58px", height: "58px", borderRadius: "50%", border: "none", fontSize: "22px", background: camOn ? "white" : "red" }}>{camOn ? "📹" : "🚫"}</button>
+          <button onClick={endCall} style={{ width: "58px", height: "58px", borderRadius: "50%", border: "none", background: "red", fontSize: "22px" }}>📞</button>
+        </div>
       </div>
-    </div>
-  );
+    );
+    return (
+      <div style={{ background: "#111B21", color: "white", minHeight: "100vh", textAlign: "center", paddingTop: "80px" }}>
+        <div style={{ width: "100px", height: "100px", background: "#00A8E8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", margin: "0 auto" }}>{call[0]}</div>
+        <h2>{call}</h2><p>Audio Calling... 📞</p>
+        <div style={{ marginTop: "60px", display: "flex", justifyContent: "center", gap: "20px" }}>
+          <button onClick={toggleMic} style={{ width: "55px", height: "55px", borderRadius: "50%", border: "none", fontSize: "22px", background: micOn ? "white" : "red" }}>{micOn ? "🎤" : "🔇"}</button>
+          <button onClick={endCall} style={{ width: "55px", height: "55px", borderRadius: "50%", border: "none", background: "red", fontSize: "22px" }}>📞</button>
+        </div>
+      </div>
+    );
+  }
   if (inC) return (
     <div style={{ width: "100%", minHeight: "100vh", background: bg }}>
       <div style={{ background: "#111B21", color: "white", padding: "8px", display: "flex", alignItems: "center", position: "relative" as const }}>
