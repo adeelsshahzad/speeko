@@ -6,7 +6,6 @@ const [txt,setTxt]=useState("");
 const [search,setSearch]=useState("");
 const [p,setP]=useState("chats");
 const [tab,setTab]=useState("All");
-const [myName]=useState("Adeel");
 const [allMsgs,setAllMsgs]=useState<any>({Ammi:[{type:"date",text:"Today"},{type:"text",text:"Beta khana kha liya?",time:"10:30 AM",status:"seen"}],Bhai:[{type:"date",text:"Today"},{type:"text",text:"Kal aa raha hoon",time:"9:00 AM",status:"seen"}],Ayesha:[{type:"date",text:"Today"}],MyMoti:[{type:"date",text:"Today"},{type:"text",text:"❤️ I love you",time:"9:15 AM",status:"seen"}]});
 const msgs=allMsgs[s]||[];
 function setMsgs(n:any[]){const u={...allMsgs,[s]:n};setAllMsgs(u);try{localStorage.setItem("speeko_chats",JSON.stringify(u))}catch(e){}}
@@ -52,7 +51,6 @@ const [ytPlaying,setYtPlaying]=useState(true);
 const [ytTime,setYtTime]=useState(0);
 useEffect(()=>{if(!watchTogether)return;const t=setInterval(()=>{if(ytPlaying)setYtTime(x=>x+1)},1000);return()=>clearInterval(t)},[watchTogether,ytPlaying]);
 const chats=[{n:"Ammi",m:"Beta khana kha liya?",t:"10:30 AM",num:"+92 300 1234567",about:"Meri Ammi"},{n:"Bhai",m:"Kal aa raha hoon",t:"9:00 AM",num:"+92 321 7654321",about:"Bhai"},{n:"Ayesha",m:"Hi",t:"Yesterday",num:"+92 333 9876543",about:"Hey"},{n:"My Moti",m:"I love you",t:"9:15 AM",num:"+92 300 5555555",about:"Meri Jaan"}];
-const cur=chats.find(c=>c.n===s)||chats[0];
 const isBlocked=blocked.includes(s);
 const emojis:any={Face:["😀","😁","😂","🤣","😊","😍","😘","😎","😢","😭","😡","😴","🤔","😇","🥰","😜","🤩","😷","🤯","😱","🥳","😈","👻","💀"],Hand:["👍","👎","🙏","👏","✌️","🤞","👌","👋","🤝","💪","🖐️","✋","👊","🤲","🙌"],Love:["❤️","🧡","💛","💚","💙","💜","🖤","🤍","💔","💕","💖","💘","💯","✨","⭐","🔥","🎉","🎊","🎈","🎁","🌹"]};
 const gifCats=["My GIFs","Love","Funny","Cartoon","Religious","Happy Birthday","Happy","Sad","Urdu","Hindi"];
